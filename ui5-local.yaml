@@ -1,0 +1,45 @@
+specVersion: "3.1"
+metadata:
+  name: project1
+type: application
+framework:
+  name: SAPUI5
+  version: 1.124.6
+  libraries:
+    - name: sap.m
+    - name: sap.ui.core
+    - name: sap.fe.templates
+    - name: sap.ushell
+    - name: themelib_sap_horizon
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        backend:
+          - authenticationType: reentranceTicket
+            path: /sap
+            url: https://my403903-api.s4hana.cloud.sap
+            destination: DEMO_DEV_SAML_ASSERTION
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /sap/opu/odata4/sap/z_ui_demo_gl_posting_v4/srvd/sap/z_ext_gl_posting/0001
+            metadataPath: ./webapp/localService/metadata.xml
+            mockdataPath: ./webapp/localService/data
+            generateMockData: true
+        annotations: []
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: project1
+        ui5Theme: sap_horizon
