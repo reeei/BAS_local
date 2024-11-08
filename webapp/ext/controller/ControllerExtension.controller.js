@@ -99,17 +99,18 @@ sap.ui.define([
 			}
 
 			var oModel = this.base.getExtensionAPI().getModel();
-
 			var oOperation = oModel.bindContext("/ZC_GeneralJournalEntry/" + namespace + "fileUpload(...)");
 
 			var fnSuccess = function () {
 				oModel.refresh();
 				MessageToast.show(oResourceBundle.getText("uploadFileSuccMsg"));
+				this.outputResultFile();
 				oDialog.close();
 				//Clear the file name from file uploader
 				sap.ui.getCore().byId("idFileUpload").clear();
 				oDialog.destroy();
 				fileContent = undefined;
+				
 			}.bind(this);
 
 			var fnError = function (oError) {
@@ -150,7 +151,64 @@ sap.ui.define([
 			oOperation.setParameter("fileContent", fileContent);
 			oOperation.setParameter("fileExtension", fileName.split(".")[1])
 			//oOperation.setParameter("process", sProcess);
-			oOperation.execute().then(fnSuccess, fnError);
+			oOperation.invoke().then(fnSuccess, fnError);
+		},
+		outputResultFile () {
+			var oModel = this.base.getExtensionAPI().getModel(),
+				oResourceBundle = this.base.getView().getModel("i18n").getResourceBundle();
+			var oOperation = oModel.bindContext("/ZC_GeneralJournalEntry/" + namespace + "outputResult(...)");
+
+			//Success function to display success messages from OData Operation
+			var fnSuccess = function () {
+				var oResults = oOperation.getBoundContext().getObject();
+
+				var fixedFileContent = this.convertBase64(oResults.fileContent);
+
+				var aUint8Array = Uint8Array.from(atob(fixedFileContent), c => c.charCodeAt(0)),
+					oblob = new Blob([aUint8Array], { type: oResults.mimeType });
+
+				uFile.save(oblob, oResults.fileName, oResults.fileExtension, oResults.mimeType);
+				MessageToast.show(oResourceBundle.getText("downloadTempSuccMsg"));
+			}.bind(this);
+
+			//Error function to display error messages from OData Operation
+			var fnError = function () {
+				this.base.editFlow.securedExecution(
+					function () {
+						Messaging.addMessages(
+							new sap.ui.core.message.Message({
+								message: oError.message,
+								target: "",
+								persistent: true,
+								type: sap.ui.core.MessageType.Error,
+								code: oError.error.code
+							})
+						);
+						var aErrorDetail = oError.error.details;
+						aErrorDetail.forEach((error) => {
+							Messaging.addMessages(
+								new sap.ui.core.message.Message({
+									message: error.message,
+									target: "",
+									persistent: true,
+									type: sap.ui.core.MessageType.Error,
+									code: error.code
+								})
+							);
+						})
+					}
+				);
+			}.bind(this);
+
+			// Execute OData V4 operation i.e a static function 'downloadFile' to download the excel template
+			oOperation.setParameter("mimeType", fileType);
+			oOperation.setParameter("fileName", fileName);
+			oOperation.setParameter("fileContent", fileContent);
+			oOperation.setParameter("fileExtension", fileName.split(".")[1])
+			// oOperation.execute().then(fnSuccess, fnError)
+			oOperation.invoke().then(fnSuccess, fnError);
+                        // From UI5 version 1.123.0 onwards use invoke function
+			//oOperation.invoke().then(fnSuccess, fnError);
 		},
 		onCancelPress () {
 			oDialog.close();
