@@ -102,9 +102,48 @@ sap.ui.define([
 			var oOperation = oModel.bindContext("/ZC_GeneralJournalEntry/" + namespace + "fileUpload(...)");
 
 			var fnSuccess = function () {
+				// this.base.editFlow.securedExecution(
+				// 	function () {
+						
+				// 		console.log("AAA");
+				// 		// console.log(oOperation.getBoundContext().requestObject());
+				// 		console.log(oModel);
+				// 		console.log(oSuccess);
+				// 		// MessageToast.show(oOperation.getBoundContext());
+				// 		Messaging.addMessages(
+				// 			// new sap.ui.core.message.Message({
+				// 			// 	message: oModel.mMessages.message,
+				// 			// 	target: "",
+				// 			// 	persistent: true,
+				// 			// 	type: oModel.mMessages.type,
+				// 			// 	code: oModel.mMessages.code
+				// 			// })
+				// 			new sap.ui.core.message.Message({
+				// 				message: oSuccess.message,
+				// 				target: "",
+				// 				persistent: true,
+				// 				type: sap.ui.core.MessageType.Success,
+				// 				code: oSuccess.success.code
+				// 			})
+				// 		);
+				// 		var aSuccessDetail = oSuccess.success.details;
+				// 		aSuccessDetail.forEach((success) => {
+				// 			Messaging.addMessages(
+				// 				new sap.ui.core.message.Message({
+				// 					message: success.message,
+				// 					target: "",
+				// 					persistent: true,
+				// 					type: sap.ui.core.MessageType.Success,
+				// 					code: success.code
+				// 				})
+				// 			);
+				// 		})
+				// 	}
+				// )
 				oModel.refresh();
 				MessageToast.show(oResourceBundle.getText("uploadFileSuccMsg"));
-				this.outputResultFile();
+				
+				// this.outputResultFile();
 				oDialog.close();
 				//Clear the file name from file uploader
 				sap.ui.getCore().byId("idFileUpload").clear();
