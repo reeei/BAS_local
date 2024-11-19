@@ -4,17 +4,17 @@
     xmlns:l="sap.ui.layout"
     xmlns:u="sap.ui.unified"
     xmlns="sap.m">
-    <Dialog id="idFIleDialog" title="{i18n>uploadProductDialogTitle}">
+    <Dialog id="idFIleDialog" title="{i18n>uploadDialogTitle}" contentWidth="420px">
         <VBox id="idVbox" width="100%">
-            <core:InvisibleText id="idInvisibleText" text="{i18n>uploadProductDialogTitle}" />
+            <core:InvisibleText id="idInvisibleText" text="{i18n>uploadDialogTitle}" />
             <f:SimpleForm id="idSimpleForm" editable="true"
                 layout="ResponsiveGridLayout" maxContainerCols="2">
                 <f:content>
-                    <Label id="idFileUploadlabel" required="true" text="{i18n>upladProductFile}"/>
+                    <Label id="idFileUploadlabel" required="true" text="{i18n>uploadFile}"/>
                     <u:FileUploader id="idFileUpload" name="internalFileUpload" change="onFileChange"
                         width="100%" uploadComplete="onUploadComplete" style="Emphasized"
-                        fileType="xls,xlsx" placeholder="{i18n>uploadProductPlaceholder}"
-                        tooltip="{i18n>uploadProductToolTip}" sendXHR="false" />
+                        fileType="xls,xlsx" placeholder="{i18n>uploadPlaceholder}"
+                        tooltip="{i18n>uploadToolTip}" sendXHR="false" />
                 </f:content>
             </f:SimpleForm>
         </VBox>
