@@ -19,7 +19,7 @@ builder:
         app:
           name: ZBSP_JEUPL
           description: JournalEntryMassUpload
-          package: Y_DVELOPMENT_PKG_01
+          package: ZJOURNALENTRYMASSUPLOADAPP
           transport: X7OK900105
         exclude:
           - /test/

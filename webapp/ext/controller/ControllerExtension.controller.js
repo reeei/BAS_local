@@ -11,10 +11,11 @@ sap.ui.define([
 	'sap/ui/core/message/MessageType',
 	'sap/ui/model/odata/v4/ODataContextBinding',
 	'sap/ui/core/Fragment',
-	'sap/ui/core/util/File'
+	'sap/ui/core/util/File',
+	'sap/ui/core/BusyIndicator'
 ],
 	
-	function (ControllerExtension,ExtensionAPI,MessageToast,Dialog,FileUploader,ResourceModel,ResourceBundle,Messaging,Message,MessageType,ODataContextBinding,Fragment,uFile) {
+	function (ControllerExtension,ExtensionAPI,MessageToast,Dialog,FileUploader,ResourceModel,ResourceBundle,Messaging,Message,MessageType,ODataContextBinding,Fragment,uFile,BusyIndicator) {
 	'use strict';
 	var oDialog = new Dialog;
 	var fileContent;
@@ -91,6 +92,7 @@ sap.ui.define([
 		},
 		//perform upload
 		onUploadPress: function (oEvent) {
+			BusyIndicator.show(0);
 			var oResourceBundle = this.base.getView().getModel("i18n").getResourceBundle();
 			//check file has been entered
 			if (fileContent === undefined || fileContent === "") {
@@ -149,6 +151,7 @@ sap.ui.define([
 				sap.ui.getCore().byId("idFileUpload").clear();
 				oDialog.destroy();
 				fileContent = undefined;
+				BusyIndicator.hide();
 				
 			}.bind(this);
 
@@ -183,6 +186,7 @@ sap.ui.define([
 				sap.ui.getCore().byId("idFileUpload").clear();
 				oDialog.destroy();
 				fileContent = undefined;
+				BusyIndicator.hide();
 			}.bind(this);
 
 			oOperation.setParameter("mimeType", fileType);
@@ -249,6 +253,7 @@ sap.ui.define([
                         // From UI5 version 1.123.0 onwards use invoke function
 			//oOperation.invoke().then(fnSuccess, fnError);
 		},
+		
 		onCancelPress () {
 			oDialog.close();
 			oDialog.destroy()
